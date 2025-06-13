@@ -32,4 +32,34 @@ RSpec.describe StringCalculator do
             expect(calc.add("7,3,2")).to eq(12)
         end
     end
+    context "handles newline as delimiters" do
+        it "return 3 for string '//;\n1;2'" do
+            expect(calc.add("//;\n1;2")).to eq(3)
+        end
+        it "return 6 for string '//[***]\n1@@2##3'" do 
+            expect(calc.add("//[***]\n1@@2##3")).to eq(6)  
+        end
+        it "return 6 for string '//[*][%]\n1@2(3)'" do
+            expect(calc.add("//[*][%]\n1@2(3)")).to eq(6)
+        end
+    end
+    context "handle negative numbers" do
+        it "return error for negative numbers for string '1,-2,-3'" do 
+            expect{ calc.add('1,-2,-3') }.to raise_error("negatives not allowed: -2,-3")
+        end
+        it "return error for negative numbers for string '1,--2,--3'" do 
+            expect{ calc.add('1,--2,--3') }.to raise_error("negatives not allowed: -2,-3")
+        end
+        it "return error for negative numbers for string '-3'" do 
+            expect{ calc.add('-3') }.to raise_error("negatives not allowed: -3")
+        end
+    end
+    context "ignore number over 1000" do
+        it "return 2 for string '2,1001'" do
+            expect(calc.add('2,1001')).to eq(2)
+        end 
+        it "return 6 for string '2,1001,4,1234'" do
+            expect(calc.add('2,1001,4,1234')).to eq(6)
+        end
+    end
 end
